@@ -1,0 +1,124 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="keywords" content="HTML5，jquery" />
+<meta name="description" content="杜大娘包子" />
+<meta name="viewport"
+	content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+<title>杜大娘包子</title>
+<link rel="stylesheet" type="text/css" href="main.css" />
+<script src="http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+<style>
+#chatBox{width:400px;border:1px solid #d3d3d3;margin:50px auto;}
+#chat {max-height:400px;overflow-y:auto;max-width:400px;}
+#chat > ul > li{padding:3px;clear:both;padding:4px;margin:10px 0px 5px 0px;overflow:auto}
+#chatMessages{list-style:none}
+#chatMessages > li > img{width:35px;float:left}
+#chatMessages > li > span{width:300px;float:left;margin-left:5px}
+#chatData{padding:5px;margin:5px;border-radius:5px;border:1px solid #999;width:300px}
+#trig2 {padding: 4px;border: solid 1px #666;background-color: #133783;color:#fff;
+font-weight:bold; cursor:pointer}
+#trig {border: 1px solid #390; color:#fff; background: #360;-webkit-border-radius: 3px;
+-moz-border-radius:3px;padding:5px 8px; cursor:pointer}
+.top_title {text-align: center;}
+</style>
+<script type="text/javascript">
+var alarm_time = null; //报警时间
+var alarm_time_array=new Array();
+var timer;
+var today;
+$(function(){ 
+
+	$("#chatData").focus();
+	$('<audio id="chatAudio"><source src="ring.ogg" type="audio/ogg"><source src="ring.mp3" type="audio/mpeg"></audio>').appendTo('body');
+
+	$("#trig").click(function(){
+		var a = $("#chatData").val().trim();
+		if(a.length > 0){
+			$("#chatData").val(''); 
+			$("#chatData").focus();
+			$("<li></li>").html('<img src="qq.gif"/><span>'+a+'</span>').appendTo("#chatMessages");
+			$("#chat").animate({"scrollTop": $('#chat')[0].scrollHeight}, "slow");
+			//$('#chatAudio')[0].play();
+      addDelayTime();
+			timer_callback();
+		}
+	});
+});
+
+function timer_callback(){
+
+  today=new Date();
+  //showTime(today, "当前时间");
+  //showTime(alarm_time,"当前要报警时间");
+  if (alarm_time!==null && today>=alarm_time) {
+	  $('#chatAudio')[0].play();
+    alarm_time = getNewAlarmTime();
+    //showTime(alarm_time,"下次报警时间");
+  }
+  timer = setTimeout("timer_callback()",10000);
+}
+
+function addDelayTime() {
+    var time = new Date();
+    var b = 1; //分钟数
+    time.setMinutes(time.getMinutes() + b, time.getSeconds(), 0);
+    //showTime(time, "堆栈报警时间");
+    alarm_time_array.unshift(time);
+    if (alarm_time===null) {
+    	alarm_time = getNewAlarmTime();
+    	//showTime(alarm_time,"第一次报警时间");
+    }
+}
+
+function showTime(time,message) {
+	if (alarm_time===null) {
+    	alert(message + "为null");
+    	return;
+    }
+  var h=time.getHours();
+  var m=time.getMinutes();
+  var s=time.getSeconds();
+	alert(message+"="+h+":"+m+":"+s);
+}
+
+function getNewAlarmTime() {
+	if (alarm_time_array.length>0) {
+	    return alarm_time_array.pop();
+	} else {
+		  return null;
+	}
+}
+</script>
+</head>
+
+<body>
+<div id="header">
+</div>
+
+<div id="main">
+   <h2 class="top_title">杜大娘包子</h2>
+   
+<div id='chatBox'>
+	<div id='chat'>
+		<ul id='chatMessages'>
+			<li>
+				<img src="qq.gif"/><span>杜大娘包子</span>
+			</li>
+		</ul>
+	</div>
+	<input type="text" id="chatData" placeholder="Message" />
+	<input type="button" value=" 发送 " id="trig" />
+</div>
+</div>
+<div id="footer">
+    <!--<p>Powered by helloweba.com  允许转载、修改和使用本站的DEMO，但请注明出处：<a href="http://www.helloweba.com">www.helloweba.com</a></p>-->
+</div>
+
+</body>
+</html>
